@@ -7,6 +7,8 @@ mod components;
 mod resources;
 mod util;
 
+use resources::Assets;
+
 mod main_menu;
 use main_menu::MainMenuPlugin;
 
@@ -37,13 +39,17 @@ fn main() {
             ..default()
         })
         .add_loopless_state(AppState::MainMenu)
-        .add_startup_system(spawn_camera_system)
+        .add_startup_system(global_setup_system)
         .add_plugins(DefaultPlugins)
         .add_plugin(MainMenuPlugin)
         .add_plugin(GamePlugin)
         .run();
 }
 
-fn spawn_camera_system(mut commands: Commands) {
+fn global_setup_system(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn_bundle(UiCameraBundle::default());
+    
+    commands.insert_resource(Assets {
+        font: asset_server.load("fonts/JetBrainsMono-Regular.ttf"),
+    });
 }

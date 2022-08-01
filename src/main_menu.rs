@@ -2,32 +2,27 @@ use bevy::prelude::*;
 use iyes_loopless::prelude::*;
 
 use super::AppState;
-use crate::components::{MenuNode, GameStartBtn};
-use crate::util::{
-    on_btn_interact, button_system, NORMAL_BUTTON
-};
+use crate::components::{GameStartBtn, MenuNode};
+use crate::resources::Assets;
+use crate::util::{button_system, on_btn_interact, NORMAL_BUTTON};
 
 pub struct MainMenuPlugin;
 
 impl Plugin for MainMenuPlugin {
     fn build(&self, app: &mut App) {
-        app
-            .add_enter_system(AppState::MainMenu, setup_menu_system)
+        app.add_enter_system(AppState::MainMenu, setup_menu_system)
             .add_exit_system(AppState::MainMenu, remove_menu_system)
             .add_system_set(
                 ConditionSet::new()
-                .run_in_state(AppState::MainMenu)
-                .with_system(btn_ingame.run_if(on_btn_interact::<GameStartBtn>))
-                .with_system(button_system)
-                .into()
+                    .run_in_state(AppState::MainMenu)
+                    .with_system(btn_ingame.run_if(on_btn_interact::<GameStartBtn>))
+                    .with_system(button_system)
+                    .into(),
             );
     }
 }
 
-fn setup_menu_system(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-) {
+fn setup_menu_system(mut commands: Commands, assets: Res<Assets>) {
     commands
         .spawn_bundle(ButtonBundle {
             style: Style {
@@ -45,7 +40,7 @@ fn setup_menu_system(
                 text: Text::with_section(
                     "Start Game",
                     TextStyle {
-                        font: asset_server.load("fonts/JetBrainsMono-Regular.ttf"),
+                        font: assets.font.clone(),
                         font_size: 40.0,
                         color: Color::rgb(0.9, 0.9, 0.9),
                     },
@@ -58,10 +53,7 @@ fn setup_menu_system(
         .insert(GameStartBtn);
 }
 
-fn remove_menu_system(
-    mut commands: Commands,
-    query: Query<Entity, With<MenuNode>>,
-) {
+fn remove_menu_system(mut commands: Commands, query: Query<Entity, With<MenuNode>>) {
     for ent in query.iter() {
         commands.entity(ent).despawn_recursive();
     }

@@ -52,13 +52,19 @@ pub fn button_system(
     mut interaction_query: Query<
         (&Interaction, &mut UiColor),
         (Changed<Interaction>, With<Button>),
-    >
+    >,
 ) {
     for (interaction, mut color) in interaction_query.iter_mut() {
         match *interaction {
-            Interaction::Clicked => { *color = PRESSED_BUTTON.into(); }
-            Interaction::Hovered => { *color = HOVERED_BUTTON.into(); }
-            Interaction::None => { *color = NORMAL_BUTTON.into(); }
+            Interaction::Clicked => {
+                *color = PRESSED_BUTTON.into();
+            }
+            Interaction::Hovered => {
+                *color = HOVERED_BUTTON.into();
+            }
+            Interaction::None => {
+                *color = NORMAL_BUTTON.into();
+            }
         }
     }
 }
