@@ -27,7 +27,7 @@ fn setup_menu_system(mut commands: Commands, assets: Res<Assets>) {
         .spawn_bundle(ButtonBundle {
             style: Style {
                 size: Size::new(Val::Px(225.0), Val::Px(65.0)),
-                margin: Rect::all(Val::Auto),
+                margin: UiRect::all(Val::Auto),
                 justify_content: JustifyContent::Center,
                 align_items: AlignItems::Center,
                 ..default()
@@ -37,14 +37,13 @@ fn setup_menu_system(mut commands: Commands, assets: Res<Assets>) {
         })
         .with_children(|parent| {
             parent.spawn_bundle(TextBundle {
-                text: Text::with_section(
+                text: Text::from_section(
                     "Start Game",
                     TextStyle {
                         font: assets.font.clone(),
                         font_size: 40.0,
                         color: Color::rgb(0.9, 0.9, 0.9),
                     },
-                    Default::default(),
                 ),
                 ..default()
             });

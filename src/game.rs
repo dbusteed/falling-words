@@ -4,8 +4,6 @@ use iyes_loopless::prelude::*;
 use rand::{thread_rng, Rng};
 use std::fs;
 
-use bevy::diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin};
-
 use super::AppState;
 use crate::components::{FallingWord, GameNode, RestartBtn, ScoreText, TargetWord};
 use crate::resources::{Assets, Game, WindowSize, WordList};
@@ -30,8 +28,6 @@ impl Plugin for GamePlugin {
                     .with_system(find_target_system)
                     .into(),
             )
-            // .add_plugin(LogDiagnosticsPlugin::default())
-            // .add_plugin(FrameTimeDiagnosticsPlugin::default())
             .add_enter_system(AppState::GameOver, setup_gameover_system)
             .add_exit_system(AppState::GameOver, cleanup_game)
             .add_system_set(
@@ -79,7 +75,7 @@ fn setup_game_system(
         .spawn_bundle(TextBundle {
             style: Style {
                 position_type: PositionType::Absolute,
-                position: Rect {
+                position: UiRect {
                     top: Val::Px(3.),
                     left: Val::Px(5.),
                     ..default()
@@ -129,7 +125,7 @@ fn spawn_words_system(
             .spawn_bundle(TextBundle {
                 style: Style {
                     position_type: PositionType::Absolute,
-                    position: Rect {
+                    position: UiRect {
                         top: Val::Px(-10.),
                         right: Val::Px(window_size.width / 2.)
                             + thread_rng().gen_range(-80..100) as f32,
@@ -254,7 +250,7 @@ fn setup_gameover_system(mut commands: Commands, assets: Res<Assets>) {
         .spawn_bundle(ButtonBundle {
             style: Style {
                 size: Size::new(Val::Px(225.0), Val::Px(65.0)),
-                margin: Rect::all(Val::Auto),
+                margin: UiRect::all(Val::Auto),
                 justify_content: JustifyContent::Center,
                 align_items: AlignItems::Center,
                 ..default()
@@ -264,14 +260,13 @@ fn setup_gameover_system(mut commands: Commands, assets: Res<Assets>) {
         })
         .with_children(|button| {
             button.spawn_bundle(TextBundle {
-                text: Text::with_section(
+                text: Text::from_section(
                     "Restart",
                     TextStyle {
                         font: assets.font.clone(),
                         font_size: 40.0,
                         color: Color::rgb(0.9, 0.9, 0.9),
                     },
-                    default(),
                 ),
                 ..default()
             });

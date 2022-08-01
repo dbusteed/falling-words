@@ -47,7 +47,7 @@ fn main() {
 }
 
 fn global_setup_system(mut commands: Commands, asset_server: Res<AssetServer>) {
-    commands.spawn_bundle(UiCameraBundle::default());
+    commands.spawn_bundle(Camera2dBundle::default());
     
     commands.insert_resource(Assets {
         font: asset_server.load("fonts/JetBrainsMono-Regular.ttf"),
