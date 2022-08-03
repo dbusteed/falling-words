@@ -40,11 +40,7 @@ impl Plugin for GamePlugin {
     }
 }
 
-fn setup_game_system(
-    mut commands: Commands,
-    mut windows: ResMut<Windows>,
-    assets: Res<Assets>,
-) {
+fn setup_game_system(mut commands: Commands, mut windows: ResMut<Windows>, assets: Res<Assets>) {
     // game data resource
     commands.insert_resource(Game {
         letter_index: 0,
@@ -190,7 +186,7 @@ fn find_target_system(
                 }
             })
             .collect::<Vec<(Entity, String, f32)>>();
-        
+
         entity_first_letters.sort_by(|a, b| b.2.partial_cmp(&a.2).unwrap());
 
         for ev in letter_evt.iter() {
@@ -286,12 +282,11 @@ fn cleanup_game(mut commands: Commands, query: Query<Entity, With<GameNode>>) {
 }
 
 fn keyboard_listen_system(kb: Res<Input<KeyCode>>, mut letter_evt: EventWriter<LetterEvent>) {
-    let mut letter: &str = "_";
+    // check if a key was pressed
     if let Some(keycode) = kb.get_just_pressed().last() {
-        letter = match_letter(keycode);
-    }
-
-    if letter != "_" {
-        letter_evt.send(LetterEvent(letter));
+        // if the key pressed is a valid letter, send the letter event
+        if let Some(letter) = match_letter(keycode) {
+            letter_evt.send(LetterEvent(letter));
+        }
     }
 }
